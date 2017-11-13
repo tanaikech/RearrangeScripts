@@ -1,0 +1,141 @@
+<head>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+    <style>
+    #select_file {
+        text-align: left;
+        width: 95%;
+        font-size: 1em;
+        margin: auto;
+        height: 3em;
+    }
+
+    #sortable {
+        list-style-type: none;
+        margin: auto;
+        padding: 0;
+        width: 95%;
+        cursor: pointer;
+    }
+
+    #sortable li {
+        margin: 0;
+        padding: 1em;
+        padding-left: 0.2em;
+        font-size: 1em;
+        height: 18px;
+        text-align: left;
+    }
+
+    #submit {
+        margin: 20px 10px 10px 10px;
+        font-size: 1em;
+    }
+
+    h1 {
+        position: relative;
+        padding: 10px 10px 10px 50px;
+        background: #1e90ff;
+        color: white;
+        font-size: 1.5em;
+    }
+
+    h2 {
+        position: relative;
+        padding: 5px 10px 5px 10px;
+        color: darkgreen;
+        font-size: 1.0em;
+    }
+    </style>
+</head>
+
+<body>
+    <h1>Select project</h1>
+    <select id="select_file"></select>
+    <div id="rea" style="display: none;">
+        <h1>Rearrange scripts</h1>
+        <h2 id="filename"></h2>
+        <form>
+            <ul id="sortable"></ul>
+            <input type="button" class="action" id="submit" value="Save!">
+        </form>
+        <h3 id="result"></h3>
+    </div>
+</body>
+<script>
+var alldata = {};
+var scripts = [];
+var projectId = "";
+var projectName = "";
+
+$(function() {
+    google.script.run.withSuccessHandler(importData).doRearrangement(["getFiles", "root"]);
+
+    $('#select_file').change(function() {
+        $('#result').html("");
+        var id = $('#select_file').val();
+        var disp = $('#select_file option:selected').text();
+        if (~disp.indexOf("Folder") || ~disp.indexOf("root") || ~disp.indexOf("../")) {
+            $('#select_file > option').remove();
+            if (alldata[id]) {
+                var dat = {};
+                dat[id] = alldata[id];
+                importData(dat);
+                return;
+            } else {
+                google.script.run.withSuccessHandler(importData).doRearrangement(["getFiles", id]);
+                return;
+            }
+            return;
+        }
+        projectId = id;
+        google.script.run.withSuccessHandler(output).doRearrangement(["getProjectRaw", id]);
+        $('#rea').show('normal');
+    });
+
+    $("#sortable").sortable();
+    $("#sortable").disableSelection();
+    $("#submit").click(function() {
+        $("#result").empty();
+        var result = $("#sortable").sortable("toArray", { attribute: 'value' });
+        google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrange", [result, scripts, projectId, projectName]]);
+    });
+});
+
+function importData(e) {
+    var key = Object.keys(e)[0];
+    if (!alldata[key]) alldata[key] = e[key];
+    if (e[key]["keyparent"]) {
+        $('#select_file').append($('<option>').html("./" + e[key]["keyname"]).val(key));
+        $('#select_file').append($('<option>').html("../").val(e[key]["keyparent"]));
+    } else {
+        $('#select_file').append($('<option>').html("./" + e[key]["keyname"]).val(key));
+    }
+    for (var i = 0; i < e[key]["files"].length; i++) {
+        $('#select_file').append($('<option>')
+            .html(e[key]["files"][i].mimeType == "folder" ? "[Folder]" + e[key]["files"][i].name : e[key]["files"][i].name)
+            .val(e[key]["files"][i].id)
+        );
+    }
+}
+
+function output(data) {
+    $("#sortable").empty();
+    scripts = data[0];
+    projectName = data[1];
+    $("#filename").html("<a href=\"javascript:projectlink();\"><span class=\"ui-icon ui-icon-document\"></span></a> " + projectName);
+    for (var i in data[0].files) {
+        $("#sortable").append('<li value="' + i + '" class="ui-state-default"><span class="ui-icon ui-icon-triangle-2-n-s"></span>' + data[0].files[i].name + ', ' + data[0].files[i].type + '</li>');
+    }
+}
+
+function projectlink() {
+    window.open("https://script.google.com/d/" + projectId + "/edit?usp=drive_web", "project link", "width=600,height=600,scrollbars=1");
+}
+
+function ok(e) {
+    $('#result').html("Done.");
+}
+</script>
