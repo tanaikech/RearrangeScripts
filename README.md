@@ -22,44 +22,26 @@ Have you ever thought about rearranging Google Apps Scripts in a project which c
 ~~~
 
 # How to install
-- Create new spreadsheet or document.
+1. Create new spreadsheet or document.
     - This application has to be used for bound script of spreadsheet and/or document because of use the side bar.
-- Open script editor and [Install RearrangeScripts library](https://developers.google.com/apps-script/guides/libraries).
+1. Open script editor and [Install RearrangeScripts library](https://developers.google.com/apps-script/guides/libraries).
     - Library's project key is **``1OHZqwmyQ3v2aeiCMJbmhfe_7OY1TZYAhIzOZhhLqrMd7wzLufD2CJbQX``**.
-- [Set scopes at Manifests](https://developers.google.com/apps-script/concepts/manifests)
+1. [Enable Drive API at API console](https://console.developers.google.com/apis/api/drive/overview)
     - On script editor
-        - View -> Show manifest file
-    - Add **"oauthScopes"** to "appsscript.json". After you installed the library and added the scopes to the default "appsscript.json", it becomes as follows. This timeZone is my current time zone. <u>Of course, you can install the library by directly modifying "appsscript.json".</u>
+    - Resources -> Cloud Platform project
+    - View API console
+    - At Getting started, click Enable APIs and get credentials like keys.
+    - At left side, click Library.
+    - At Search for APIs & services, input **Drive API**. And click Google Drive API.
+    - Click Enable button.
+        - If it has already been enabled, please don't turn off.
 
-~~~json
-{
-  "timeZone": "Asia/Tokyo",
-  "dependencies": {
-    "libraries": [{
-      "userSymbol": "RearrangeScripts",
-      "libraryId": "1OHZqwmyQ3v2aeiCMJbmhfe_7OY1TZYAhIzOZhhLqrMd7wzLufD2CJbQX",
-      "version": "1",
-      "developmentMode": true
-    }]
-  },
-  "exceptionLogging": "STACKDRIVER",
-  "oauthScopes": [
-    "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/script.scriptapp",
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/drive.scripts"
-  ]
-}
-~~~
+<u>Installing is done! You can use RearrangeScripts.</u>
 
-Installing is done. You can use RearrangeScripts.
-
-
-### Note :
-This application uses Drive API. But I confirmed that Drive API is automatically enabled when this library is run. So you are not required to enable it by yourself.
+[In the case of an error related to scopes, please check here.](#QA)
 
 # Usage
-Please copy and paste the following script to the script editor installed this application, and run ``doRearrangement``.
+Please copy and paste the following script to the script editor installed this application, and run ``doRearrangement``. By this, the sidebar is opened on Spreadsheet.
 
 ~~~javascript
 function doRearrangement(e) {
@@ -96,6 +78,38 @@ When existing project is overwritten by a script with an unique filename, all sc
 
 For operating project, you can use [ProjectApp](https://github.com/tanaikech/ProjectApp). This application also uses ProjectApp.
 
+-----
+
+<a name="QA"></a>
+# Q & A
+- [Set scopes at Manifests](https://developers.google.com/apps-script/concepts/manifests)
+    - On script editor
+        - View -> Show manifest file
+        - Add **"oauthScopes"** to "appsscript.json". After you installed the library and added the scopes to the default "appsscript.json", it becomes as follows. This timeZone is my current time zone. <u>Of course, you can install the library by directly modifying "appsscript.json".</u>
+
+~~~json
+{
+  "timeZone": "Asia/Tokyo",
+  "dependencies": {
+    "libraries": [{
+      "userSymbol": "RearrangeScripts",
+      "libraryId": "1OHZqwmyQ3v2aeiCMJbmhfe_7OY1TZYAhIzOZhhLqrMd7wzLufD2CJbQX",
+      "version": "1",
+      "developmentMode": true
+    }]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/script.scriptapp",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/drive.scripts"
+  ]
+}
+~~~
+
+Installing is done. You can use RearrangeScripts.
+
 
 
 <a name="Licence"></a>
@@ -113,5 +127,12 @@ If you have any questions and commissions for me, feel free to tell me.
 * v1.0.0 (November 13, 2017)
 
     Initial release.
+
+* v1.0.1 (November 23, 2017)
+
+    - Modified README.md
+        - It reported that scopes used at this library can automatically install.
+        - The detail information about this can be seen at [here](https://gist.github.com/tanaikech/23ddf599a4155b66f1029978bba8153b).
+
 
 [TOP](#TOP)
