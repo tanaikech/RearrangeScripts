@@ -1,4 +1,27 @@
 /**
+ * Install
+ */
+function onInstall() {
+  onOpen();
+}
+
+/**
+ * Create menu
+ */
+function onOpen() {
+  var ui = SpreadsheetApp
+    .getUi()
+    .createAddonMenu()
+    .addItem('Rearrange scripts', 'opensidebar')
+    .addToUi();
+}
+
+function opensidebar() {
+  var sidebarUi = HtmlService.createHtmlOutputFromFile('index').setTitle('Rearranging Scripts in Project');
+  SpreadsheetApp.getUi().showSidebar(sidebarUi);
+}
+
+/**
  * Main method for RearrangeScripts.<br>
  * @param {Object} Object Object
  * @return {Object} Return Object
@@ -11,11 +34,11 @@ function doRearrangement(e) {
                 return RS.getFiles(e[1]);
             case "getProjectRaw":
                 return RS.getProjectRaw(e[1]);
-            case "reflectArrange":
-                return RS.reflectArrange(e[1]);
+            case "reflectArrangeOW":
+                return RS.reflectArrangeOW(e[1]);
+            case "reflectArrangeCR":
+                return RS.reflectArrangeCR(e[1]);
         }
-    } else {
-        return RS.rearrangementScripts();
     }
     return;
 }
@@ -23,8 +46,6 @@ function doRearrangement(e) {
 (function(r) {
   var RearrangeScripts;
   RearrangeScripts = (function() {
-    var getui;
-
     RearrangeScripts.name = "RearrangeScripts";
 
     function RearrangeScripts(a) {
@@ -36,12 +57,6 @@ function doRearrangement(e) {
     RearrangeScripts.prototype.getProjectRaw = function(projectId_) {
       this.projectName = DriveApp.getFileById(projectId_).getName();
       return [this.pa.getProjectRaw(projectId_), this.projectName];
-    };
-
-    RearrangeScripts.prototype.rearrangementScripts = function() {
-      var sidebarUi;
-      sidebarUi = HtmlService.createHtmlOutputFromFile('index').setTitle('Rearranging Scripts in Project');
-      (getui.call(this)).showSidebar(sidebarUi);
     };
 
     RearrangeScripts.prototype.updateProjectByRaw = function(projectId_, raw_) {
@@ -81,7 +96,7 @@ function doRearrangement(e) {
       return data;
     };
 
-    RearrangeScripts.prototype.reflectArrange = function(e) {
+    RearrangeScripts.prototype.reflectArrangeOW = function(e) {
       var dummy, h, i, j, len, project, ref;
       project = {};
       project.files = [];
@@ -106,24 +121,19 @@ function doRearrangement(e) {
       return JSON.stringify(project);
     };
 
-    getui = function() {
-      var e, errD, errS, uiD, uiS;
-      try {
-        uiS = SpreadsheetApp.getUi();
-      } catch (error) {
-        e = error;
-        errS = e;
+    RearrangeScripts.prototype.reflectArrangeCR = function(e) {
+      var h, i, j, len, project, ref;
+      project = {};
+      project.files = [];
+      ref = e[0];
+      for (i = j = 0, len = ref.length; j < len; i = ++j) {
+        h = ref[i];
+        delete e[1].files[e[0][i]].id;
+        project.files.push(e[1].files[e[0][i]]);
       }
-      try {
-        uiD = DocumentApp.getUi();
-      } catch (error) {
-        e = error;
-        errD = e;
-      }
-      if (errS === errD) {
-        throw new Error("This addon cannot be used here.");
-      }
-      return uiS || uiD;
+      this.projectName = e[3];
+      this.pa.createProjectByRaw(this.projectName + "_Rearranged", project);
+      return JSON.stringify(project);
     };
 
     return RearrangeScripts;

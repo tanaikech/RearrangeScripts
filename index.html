@@ -1,69 +1,95 @@
+<!DOCTYPE html>
 <head>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+    <title>Rearranging Scripts in Project</title>
     <style>
-    #select_file {
-        text-align: left;
-        width: 95%;
-        font-size: 1em;
-        margin: auto;
-        height: 3em;
+    h1 {
+        background: #1e90ff;
+        color: white;
+        font-size: 1.5em;
+        padding: 10px 10px 10px 50px;
+        position: relative;
     }
 
-    #sortable {
+    h2 {
+        color: darkgreen;
+        font-size: 1.0em;
+        padding: 5px 10px 5px 10px;
+        position: relative;
+    }
+
+    h3 {
+        font-size: 1.0em;
+        margin: 10px;
+        position: relative;
+    }
+
+    .select_file {
+        font-size: 1em;
+        height: 3em;
+        margin: 5px;
+        text-align: left;
+        width: 95%;
+    }
+
+    ul.sortable {
+        cursor: pointer;
         list-style-type: none;
         margin: auto;
         padding: 0;
         width: 95%;
-        cursor: pointer;
+        border-top:1px solid #cecece;
+        border-bottom:1px solid #cecece;
     }
 
-    #sortable li {
+    ul.sortable li {
+        font-size: 1em;
+        height: 18px;
         margin: 0;
         padding: 1em;
         padding-left: 0.2em;
-        font-size: 1em;
-        height: 18px;
         text-align: left;
+        background: #ececec;
+        border-top:1px solid #cecece;
+        border-right:1px solid #cecece;
+        border-bottom:1px solid #cecece;
+        border-left:1px solid #cecece;
     }
 
-    #submit {
-        margin: 20px 10px 10px 10px;
+    input.action {
         font-size: 1em;
+        margin: 10px 10px 10px 10px;
     }
 
-    h1 {
-        position: relative;
-        padding: 10px 10px 10px 50px;
-        background: #1e90ff;
-        color: white;
-        font-size: 1.5em;
-    }
-
-    h2 {
-        position: relative;
-        padding: 5px 10px 5px 10px;
-        color: darkgreen;
-        font-size: 1.0em;
+    .radiobutton {
+        margin: 10px 5px 10px 10px;
     }
     </style>
 </head>
 
 <body>
     <h1>Select project</h1>
-    <select id="select_file"></select>
+    <select id="select_file" class="select_file"></select>
     <div id="rea" style="display: none;">
         <h1>Rearrange scripts</h1>
         <h2 id="filename"></h2>
         <form>
-            <ul id="sortable"></ul>
-            <input type="button" class="action" id="submit" value="Save!">
+            <ul id="sortable" class="sortable"></ul>
+            <div class="radiobutton">
+                <input type="radio" name="radio-a" id="radio1" value="1">
+                <label for="radio1">Overwrite to project</label>
+            </div>
+            <div class="radiobutton">
+                <input type="radio" name="radio-a" id="radio2" value="2" checked>
+                <label for="radio2">Create as new project</label>
+            </div>
+            <input type="button" id="submit" class="action" value="Save!">
         </form>
         <h3 id="result"></h3>
     </div>
-</body>
+
 <script>
 var alldata = {};
 var scripts = [];
@@ -98,9 +124,27 @@ $(function() {
     $("#sortable").sortable();
     $("#sortable").disableSelection();
     $("#submit").click(function() {
-        $("#result").empty();
-        var result = $("#sortable").sortable("toArray", { attribute: 'value' });
-        google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrange", [result, scripts, projectId, projectName]]);
+        if ($('input[name="radio-a"]:checked').val() == "1") {
+          if(window.confirm("You selected \"Overwrite to project\". When the rearranged scripts are overwritten to the project, the version history of scripts is reset once. So if you don't want to reset the version history, please select \"Create as new project\" and click \"Save!\". Do you want to overwrite?")){
+            $('#submit').val('Wait!');
+            $("#result").empty();
+            var result = $("#sortable").sortable("toArray", {attribute: 'value'});
+            google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrangeOW", [result, scripts, projectId, projectName]]);
+          } else{
+            window.alert('Canceled.');
+          }
+        }
+        
+        if ($('input[name="radio-a"]:checked').val() == "2") {
+          if(window.confirm("You selected \"Create as new project\". The rearranged scripts are created as a new project. The project is created to root folder. The suffix of filename is \"_Rearranged\". Do you want to create as a new project?")){
+            $('#submit').val('Wait!');
+            $("#result").empty();
+            var result = $("#sortable").sortable("toArray", {attribute: 'value'});
+            google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrangeCR", [result, scripts, projectId, projectName]]);
+          } else{
+            window.alert('Canceled.');
+          }
+        }
     });
 });
 
@@ -125,9 +169,11 @@ function output(data) {
     $("#sortable").empty();
     scripts = data[0];
     projectName = data[1];
-    $("#filename").html("<a href=\"javascript:projectlink();\"><span class=\"ui-icon ui-icon-document\"></span></a> " + projectName);
+    $("#filename").html("<a href=\"javascript:projectlink();\">" + projectName + "<\/a>");
     for (var i in data[0].files) {
-        $("#sortable").append('<li value="' + i + '" class="ui-state-default"><span class="ui-icon ui-icon-triangle-2-n-s"></span>' + data[0].files[i].name + ', ' + data[0].files[i].type + '</li>');
+        if ({}.hasOwnProperty.call(data[0].files, i)) {
+            $("#sortable").append('<li value="' + i + '" class="sheetItem"><span class="ui-icon ui-icon-triangle-2-n-s"><\/span>' + data[0].files[i].name + ', ' + data[0].files[i].type + '<\/li>');
+        }
     }
 }
 
@@ -136,6 +182,9 @@ function projectlink() {
 }
 
 function ok(e) {
-    $('#result').html("Done.");
+    window.alert('Done.');
+    $('#submit').val('Save!');
 }
 </script>
+
+</body>
