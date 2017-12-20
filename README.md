@@ -45,6 +45,8 @@ For operating project, you can use [ProjectApp](https://github.com/tanaikech/Pro
 
 -----
 
+# Acknowledgements
+- Jarrod Rapson
 
 <a name="Licence"></a>
 # Licence
