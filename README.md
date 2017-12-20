@@ -48,6 +48,8 @@ For operating project, you can use [ProjectApp](https://github.com/tanaikech/Pro
 # Acknowledgements
 - Jarrod Rapson
 
+# [Privacy Policy](https://tanaikebox.github.io/2017/12/13/privacy-policy/)
+
 <a name="Licence"></a>
 # Licence
 [MIT](LICENCE)
