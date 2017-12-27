@@ -13,7 +13,13 @@ function onOpen() {
     .getUi()
     .createAddonMenu()
     .addItem('Rearrange scripts', 'opensidebar')
+    .addItem('About', 'about')
     .addToUi();
+}
+
+function about() {
+  var html = HtmlService.createHtmlOutputFromFile('about').setWidth(640).setHeight(480);
+  SpreadsheetApp.getUi().showModalDialog(html, "About");
 }
 
 function opensidebar() {

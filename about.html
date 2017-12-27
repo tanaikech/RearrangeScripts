@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>About</title>
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <style>
+    body {
+        margin: 0 auto;
+        width: 620px;
+    }
+
+    .main {
+        float: left;
+        width: 70%;
+    }
+
+    .side {
+        float: right;
+        width: 30%;
+    }
+
+    ul li {
+        list-style: none;
+        margin-top: 10px;
+    }
+
+    h1 {
+        background: #0a9eff;
+        color: white;
+        font-size: 15px;
+        line-height: 1.1;
+        margin-left: -33px;
+        padding: 5px 5px 5px 42px;
+        position: relative;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h1>USAGE</h1>
+        <ul>
+            <li>1. After installation, click Add-ons -> RearrangeScripts -> Rearrange scripts</li>
+            <li>2. By this, addon is launched at sidebar, users can see "Select project".</li>
+            <li>3. At "Select project", users select a standalone project by clicking the triangle of right side. The list is displayed only standalone projects.</li>
+            <li>4. When users select one of project, "Rearrange scripts" and scripts in the selected project are shown. The scripts are shown at gray color zone.</li>
+            <li>5. Users can rearrange and reorder each scripts using own mouse.</li>
+            <li>6. When the rearrangement is done, the project can be saved by clicking "Save!" button. At that time, users can select the save method. When "Overwrite to project" is selected, the rearranged scripts are overwritten to the selected project. When "Create as new project" is selected, the rearranged scripts are saved as a new project. The new project is created to root folder.</li>
+        </ul>
+        <h1>IMPORTANT!</h1>
+        <ul>
+            <li>1. For rearranging scripts, there is one important point. When scripts in a project is rearranged, version history of scripts is reset once. So if you don't want to reset the version history, please push "Save!" with "Create as new project". By saving with "Create as new project", new project with the rearranged scripts will be created to root folder on your Google Drive. When you click "Overwrite to project", the rearranged scripts will be reflected to the selected project.</li>
+            <li>2. The rearrangement of scripts can be done for only standalone scripts. Because although the bound scripts can retrieve scripts, it cannot be updated.</li>
+        </ul>
+        <h1>Learn more</h1> If you want to see the more detail information of this add-on, you can see it at <a href="https://github.com/tanaikech/RearrangeScripts" target="_blank">https://github.com/tanaikech/RearrangeScripts</a>.
+        <h1>Report an issue</h1> You can send massages to Tanaike using e-mail "tanaike@hotmail.com".
+    </div>
+    <div class="side">
+        <form>
+            <ul>
+                <li>
+                    <input type="button" value="View in store" onClick='window.open("https://chrome.google.com/webstore/detail/rearrangescripts/ndaicidjkbcpajgejcclgfdcncpoekml?utm_source=permalink")'>
+                </li>
+                <li>
+                    <input type="button" value="Close" onClick="google.script.host.close()">
+                </li>
+            </ul>
+        </form>
+    </div>
+</body>
+
+</html>

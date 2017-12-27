@@ -28,6 +28,13 @@ Have you ever thought about rearranging Google Apps Scripts in a project which c
 # Usage
 Please see the above demonstration movie.
 
+### Post-install tip
+1. After installation, click Add-ons -> RearrangeScripts -> Rearrange scripts
+2. By this, addon is launched at sidebar, users can see "Select project".
+3. At "Select project", users select a standalone project by clicking the triangle of right side. The list is displayed only standalone projects.
+4. When users select one of project, "Rearrange scripts" and scripts in the selected project are shown. The scripts are shown at gray color zone.
+5. Users can rearrange and reorder each scripts using own mouse.
+6. When the rearrangement is done, the project can be saved by clicking "Save!" button. At that time, users can select the save method. When "Overwrite to project" is selected, the rearranged scripts are overwritten to the selected project. When "Create as new project" is selected, the rearranged scripts are saved as a new project. The new project is created to root folder.
 
 ### IMPORTANT!
 > 1. For rearranging scripts, there is one important point. <u>**When scripts in a project is rearranged, version history of scripts is reset once. So if you don't want to reset the version history, please push "Save!" with "Create as new project".**</u> By saving with "Create as new project", new project with the rearranged scripts will be created to root folder on your Google Drive. When you click "Overwrite to project", the rearranged scripts will be reflected to the selected project.
@@ -74,7 +81,11 @@ If you have any questions and commissions for me, feel free to tell me.
 
 * v2.0.0 (December 20, 2017)
 
-    [RearrangeScripts was published as an add-on application.](https://chrome.google.com/webstore/detail/rearrangescripts/ndaicidjkbcpajgejcclgfdcncpoekml?utm_source=permalink)
+    - [RearrangeScripts was published as an add-on application.](https://chrome.google.com/webstore/detail/rearrangescripts/ndaicidjkbcpajgejcclgfdcncpoekml?utm_source=permalink)
+
+* v2.0.1 (December 28, 2017)
+
+    - Added "About" to the menu of add-on.
 
 
 [TOP](#TOP)
