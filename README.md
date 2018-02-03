@@ -34,9 +34,6 @@ The projects of the standalone script type and the container-bound script type c
 1. Input "rearrangescripts" in "Search add-ons".
 1. Install rearrangescripts.
 
-# To users who are using version v2.0.1 and/or less
-Please remove this add-on and install again. By this, you can use the add-on with latest version.
-
 # Usage
 Please see the above demonstration movie.
 
