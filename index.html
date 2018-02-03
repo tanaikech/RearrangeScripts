@@ -66,12 +66,21 @@
     .radiobutton {
         margin: 10px 5px 10px 10px;
     }
+
+    input.textbox {
+        margin-left: 5px;
+        width: 175px;
+    }
     </style>
 </head>
 
 <body>
     <h1>Select project</h1>
     <select id="select_file" class="select_file"></select>
+    <div class="inline form-group">
+    <input type="text" id="fileId" class="textbox">
+    <input type="button" id="selectfileId" class="action" value="ok">
+    </div>
     <div id="rea" style="display: none;">
         <h1>Rearrange scripts</h1>
         <h2 id="filename"></h2>
@@ -97,13 +106,14 @@ var projectId = "";
 var projectName = "";
 
 $(function() {
+    $("#fileId").attr('placeholder', 'File ID of project');
     google.script.run.withSuccessHandler(importData).doRearrangement(["getFiles", "root"]);
 
     $('#select_file').change(function() {
         $('#result').html("");
         var id = $('#select_file').val();
         var disp = $('#select_file option:selected').text();
-        if (~disp.indexOf("Folder") || ~disp.indexOf("root") || ~disp.indexOf("../")) {
+        if (~disp.indexOf("Folder") || ~disp.indexOf("root") || ~disp.indexOf("./")) {
             $('#select_file > option').remove();
             if (alldata[id]) {
                 var dat = {};
@@ -117,34 +127,76 @@ $(function() {
             return;
         }
         projectId = id;
-        google.script.run.withSuccessHandler(output).doRearrangement(["getProjectRaw", id]);
-        $('#rea').show('normal');
+        $('#rea').hide('fast');
+        var d = new $.Deferred();
+        google.script.run.withSuccessHandler(
+            (res) => {
+                d.resolve(res);
+            }).doRearrangement(["getProjectRaw", id]);
+        d.promise()
+        .then((res) => {
+            output(res);
+        })
+        .then((res) => {
+            $('#rea').show('normal');
+        });
     });
 
     $("#sortable").sortable();
     $("#sortable").disableSelection();
     $("#submit").click(function() {
         if ($('input[name="radio-a"]:checked').val() == "1") {
-          if(window.confirm("You selected \"Overwrite to project\". When the rearranged scripts are overwritten to the project, the version history of scripts is reset once. So if you don't want to reset the version history, please select \"Create as new project\" and click \"Save!\". Do you want to overwrite?")){
-            $('#submit').val('Wait!');
-            $("#result").empty();
-            var result = $("#sortable").sortable("toArray", {attribute: 'value'});
-            google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrangeOW", [result, scripts, projectId, projectName]]);
-          } else{
-            window.alert('Canceled.');
-          }
+            google.script.run.withSuccessHandler(
+                function(res) {
+                    if (res) {
+                        $('#submit').val('Wait!');
+                        $("#result").empty();
+                        var result = $("#sortable").sortable("toArray", {attribute: 'value'});
+                        google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrangeOW", [result, scripts, projectId, projectName]]);
+                    } else {
+                        google.script.run.showAlert('Canceled');
+                    }
+                }
+            ).showAlertReturn("You selected \"Overwrite to project\".\nWhen the rearranged scripts are overwritten to the project,\nthe version history of scripts is reset once.\nSo if you don't want to reset the version history,\nplease select \"Create as new project\" and click \"Save!\".\n\nDo you want to overwrite?");
         }
-        
+
         if ($('input[name="radio-a"]:checked').val() == "2") {
-          if(window.confirm("You selected \"Create as new project\". The rearranged scripts are created as a new project. The project is created to root folder. The suffix of filename is \"_Rearranged\". Do you want to create as a new project?")){
-            $('#submit').val('Wait!');
-            $("#result").empty();
-            var result = $("#sortable").sortable("toArray", {attribute: 'value'});
-            google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrangeCR", [result, scripts, projectId, projectName]]);
-          } else{
-            window.alert('Canceled.');
-          }
+            google.script.run.withSuccessHandler(
+                function(res) {
+                    if (res) {
+                        $('#submit').val('Wait!');
+                        $("#result").empty();
+                        var result = $("#sortable").sortable("toArray", {attribute: 'value'});
+                        google.script.run.withSuccessHandler(ok).doRearrangement(["reflectArrangeCR", [result, scripts, projectId, projectName]]);
+                    } else {
+                        google.script.run.showAlert('Canceled');
+                    }
+                }
+            ).showAlertReturn("You selected \"Create as new project\".\nThe rearranged scripts are created as a new project.\nThe project is created to root folder.\nThe suffix of filename is \"_Rearranged\".\n\nDo you want to create as a new project?");
         }
+    });
+
+    $("#selectfileId").click(function() {
+        var id = $("#fileId").val().toString();
+        projectId = id;
+        if (id.length == 57) {
+            $('#rea').hide('fast');
+            var d = new $.Deferred();
+            google.script.run.withSuccessHandler(
+                (res) => {
+                    d.resolve(res);
+                }).doRearrangement(["getProjectRaw", id]);
+            d.promise()
+            .then((res) => {
+                output(res);
+            })
+            .then((res) => {
+                $('#rea').show('normal');
+            });
+        } else {
+            google.script.run.showAlert('Bad file ID.');
+        }
+        return;
     });
 });
 
@@ -166,13 +218,15 @@ function importData(e) {
 }
 
 function output(data) {
-    $("#sortable").empty();
-    scripts = data[0];
-    projectName = data[1];
-    $("#filename").html("<a href=\"javascript:projectlink();\">" + projectName + "<\/a>");
-    for (var i in data[0].files) {
-        if ({}.hasOwnProperty.call(data[0].files, i)) {
-            $("#sortable").append('<li value="' + i + '" class="sheetItem"><span class="ui-icon ui-icon-triangle-2-n-s"><\/span>' + data[0].files[i].name + ', ' + data[0].files[i].type + '<\/li>');
+    if (Array.isArray(data)) {
+        $("#sortable").empty();
+        scripts = data[0];
+        projectName = data[1];
+        $("#filename").html("<a href=\"javascript:projectlink();\">" + projectName + "<\/a>");
+        for (var i in data[0].files) {
+            if ({}.hasOwnProperty.call(data[0].files, i)) {
+                $("#sortable").append('<li value="' + i + '" class="sheetItem"><span class="ui-icon ui-icon-triangle-2-n-s"><\/span>' + data[0].files[i].name + ', ' + data[0].files[i].type + '<\/li>');
+            }
         }
     }
 }
@@ -182,9 +236,10 @@ function projectlink() {
 }
 
 function ok(e) {
-    window.alert('Done.');
+    google.script.run.showAlert('Done!');
     $('#submit').val('Save!');
 }
 </script>
 
 </body>
+
