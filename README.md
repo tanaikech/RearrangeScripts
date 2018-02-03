@@ -64,6 +64,8 @@ When existing project is overwritten by a script with an unique filename, all sc
 
 For operating project, you can use [ProjectApp2](https://github.com/tanaikech/ProjectApp2). This application also uses ProjectApp2.
 
+If you want to rearrange scripts on your terminal, you can use it using [ggsrun](https://github.com/tanaikech/ggsrun/blob/master/help/README.md#rearrangescripts).
+
 -----
 
 # Acknowledgements
