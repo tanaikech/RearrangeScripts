@@ -178,7 +178,6 @@ $(function() {
 
     $("#selectfileId").click(function() {
         var id = $("#fileId").val().toString();
-        projectId = id;
         if (id.length == 57) {
             $('#rea').hide('fast');
             var d = new $.Deferred();
@@ -236,6 +235,10 @@ function projectlink() {
 }
 
 function ok(e) {
+    if (e == null) {
+        $('#submit').val('Save!');
+        return;
+    }
     google.script.run.showAlert('Done!');
     $('#submit').val('Save!');
 }

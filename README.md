@@ -108,5 +108,11 @@ If you have any questions and commissions for me, feel free to tell me.
 
     - From this version, it got to be able to use the projects of both standalone script type and container-bound script type.
 
+* v2.1.1 (Match 2, 2018)
+
+    - Added a notification to turn on the switch for using Google Apps Script API.
+        - This was reported to issuetracker. [https://issuetracker.google.com/issues/74048155](https://issuetracker.google.com/issues/74048155)
+        - Acknowledgements: [Alan Wells](https://plus.google.com/111383280394705334200)
+
 
 [TOP](#TOP)
