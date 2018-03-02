@@ -34,6 +34,10 @@ The projects of the standalone script type and the container-bound script type c
 1. Input "rearrangescripts" in "Search add-ons".
 1. Install rearrangescripts.
 
+> **IMPORTANT!!**
+>
+> Please confirm this page [https://script.google.com/home/usersettings](https://script.google.com/home/usersettings) If the switch is turned off, please turn on. By this, Google Apps Script API can be used. When the switch is turned off, even if the scopes of Google Apps Script API are authorized, users cannot use the APIs.
+
 # Usage
 Please see the above demonstration movie.
 
