@@ -114,5 +114,11 @@ If you have any questions and commissions for me, feel free to tell me.
         - This was reported to issuetracker. [https://issuetracker.google.com/issues/74048155](https://issuetracker.google.com/issues/74048155)
         - Acknowledgements: [Alan Wells](https://plus.google.com/111383280394705334200)
 
+* v2.1.2 (April 14, 2018)
+
+    - A bug was removed. The bug was that when the container-bound script was rearranged, an error ``{"error":{"code":404,"message":"Requested entity was not found.","status":"NOT_FOUND"}}`` had occurred.
+        - Acknowledgements: [Max-Makhrov](https://github.com/Max-Makhrov)
+    - By recent Google's update, the order of files at the script editor was modified. The order of files at left side on the script editor is automatically ordered alphabetically without checking "View -> Sort files alphabetically". I thought that this might be a bug. So I reported this to issuetracker. [https://issuetracker.google.com/issues/77992284](https://issuetracker.google.com/issues/77992284)
+
 
 [TOP](#TOP)

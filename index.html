@@ -179,6 +179,7 @@ $(function() {
     $("#selectfileId").click(function() {
         var id = $("#fileId").val().toString();
         if (id.length == 57) {
+            projectId = id;
             $('#rea').hide('fast');
             var d = new $.Deferred();
             google.script.run.withSuccessHandler(
